@@ -1,0 +1,77 @@
+﻿@model ActualTeast.ViewModels.RateingPlogViewModel
+
+@{
+    ViewData["Title"]="Create";
+    Layout="~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>PlogRatings</h4>
+<hr />
+<div>
+    <partial name="_PlogCard" model=@ViewBag.Plog />
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PlogId" value="@ViewBag.Plog.Id" />
+            <div class="">
+            <div class="star-rating">
+                <input type="radio" id="star5" asp-for="Rating" value=5 />
+                <label for="star5" asp-for="Rating" class="star">&#9733;</label>
+                <input type="radio" id="star4" asp-for="Rating" value=4 />
+                <label for="star4" asp-for="Rating" class="star">&#9733;</label>
+                <input type="radio" id="star3" asp-for="Rating" value=3 />
+                <label for="star3" asp-for="Rating" class="star">&#9733;</label>
+                <input type="radio" id="star2" asp-for="Rating" value=2 />
+                <label for="star2" asp-for="Rating" class="star">&#9733;</label>
+                <input type="radio" id="star1" asp-for="Rating" value=1 />
+                <label for="star1" asp-for="Rating" class="star">&#9733;</label>
+                <label  class="control-label me-5 ms-0 fs-3">Rating</label>
+            </div>
+                <span asp-validation-for="Rating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Home" asp-action="Index">Back to Home</a>
+</div>
+<style>
+    .star-rating {
+        direction: rtl;
+        display: flex;
+        justify-content: center;
+        align-items:center;
+    }
+
+    .star {
+        font-size: 2rem;
+        color: #ccc;
+        cursor: pointer;
+    }
+
+        .star:hover,
+        .star:hover ~ .star {
+            color: #f0ad4e;
+        }
+
+    input[type="radio"] {
+        display: none;
+    }
+
+        input[type="radio"]:checked ~ .star {
+            color: #f0ad4e;
+        }
+</style>
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+}

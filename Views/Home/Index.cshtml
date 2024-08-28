@@ -1,8 +1,66 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Microsoft.AspNetCore.Identity
+@using ActualTeast.Models
+@using System.Security.Claims;
+@using ActualTeast.Constants;
+@using ActualTeast.Utils;
+
+@model PaginatedList<Plog>
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@{
+    ViewData["Title"]="Home Page";
+    var curre = User.FindFirstValue(ClaimTypes.Role);
+    var userId = UserManager.GetUserId(User);
+    var roleData = new ViewDataDictionary(ViewData) {
+        {"role",curre}
+    };
 }
+            <a asp-controller="Plogs" asp-action="Create" class="card-link">Add Plog</a>
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="d-flex justify-content-around align-items-center">
+        <h5 class="card-header me-auto">Plogs</h5>
+        <label class="col-form-label me-2" for="SearchOption">Search in</label>
+        <div class="justify-content-end">
+            <form class="input-group" asp-action="Index">
+                <input type="search" class="form-control" name="searchString" placeholder="Search for user" aria-label="Search" />
+                <button type="submit"
+                        class="btn btn-outline-primary">
+                    Search
+                </button>
+            </form>
+        </div>
+    </div>
+    @foreach(var plog in Model.Items )
+    {
+        <div class="">
+            <partial name="_PlogCard" model=@plog />
+            <div class="d-flex flex-row justify-content-between">
+                <p class="fs-3"> @plog.Comments.Count Comment(s) </p>
+                @if(@SignInManager.IsSignedIn(User))
+                {
+
+                    <div>
+                        <a asp-controller="Comments" asp-action="Create" asp-route-id="@plog.Id" class="card-link">Add Comment</a>
+                        <a asp-controller="Ratings" asp-action="Create" asp-route-id="@plog.Id" class="card-link">Rate</a>
+                    </div>
+                }
+            </div>
+            @foreach(var comment in plog.Comments)
+            {
+                <div class="card text-start mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">@comment.Commenter.FirstName @comment.Commenter.LastName </h5>
+                        <p class="card-text">@comment.Text </p>
+                        @if(@SignInManager.IsSignedIn(User)&&userId==comment.CommenterId)
+                        {
+                            <a asp-controller="Comments" asp-action="Edit" asp-route-id="@comment.Id" class="card-link">Edit</a>
+                            <a asp-controller="Comments" asp-action="Delete" asp-route-id="@comment.Id" class="card-link">Delete</a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
 </div>

@@ -1,0 +1,58 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using ActualTeast.Models
+@using System.Security.Claims;
+@using ActualTeast.Constants;
+
+@model Plog
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@{
+    ViewData["Title"]="Home Page";
+    var curre = User.FindFirstValue(ClaimTypes.Role);
+    var userId = UserManager.GetUserId(User);
+    var roleData = new ViewDataDictionary(ViewData) {
+        {"role",curre}
+    };
+}
+
+<div class="card text-start mb-3">
+    <div class="card-header">
+        <div class="d-flex flex-row justify-content-between">
+            <span>
+                @Model.Title
+            </span>
+            @if(@SignInManager.IsSignedIn(User)&&userId==Model.OwnerId)
+            {
+                <div>
+                    <a asp-controller="Plogs" asp-action="Edit" asp-route-id="@Model.Id" class="card-link">Edit Plog</a>
+                    <a asp-controller="Plogs" asp-action="Delete" asp-route-id="@Model.Id" class="card-link">Delete Plog</a>
+            </div>
+            }
+        </div>
+    </div>
+    <div class="card-body">
+        <blockquote class="blockquote mb-0">
+            <p>@Model.Content</p>
+            <footer class="blockquote-footer">@Model.PublishDate </footer>
+        </blockquote>
+    </div>
+    <div class="card-footer">
+        <div class="d-flex flex-row justify-content-between">
+            <span>
+                @Model.Owner.FirstName @Model.Owner.LastName
+            </span>
+            <span>
+                Rating @Model.GetTotalRating() <span class="star">&#9733;</span>  Based on @Model.Ratings.Count Review(s)
+            </span>
+        </div>
+        
+    </div>
+</div>
+<style>
+    .star {
+        font-size: 1.3rem;
+        color: #f0ad4e;
+        cursor: pointer;
+    }
+</style>

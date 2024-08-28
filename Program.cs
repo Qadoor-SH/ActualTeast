@@ -34,5 +34,11 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
+using(var scope = app.Services.CreateScope())
+{
+    SystemInitializer seeding = new (scope.ServiceProvider);
+    seeding.SeedRoles().Wait(); // Wait for the asynchronous method to complete
+    seeding.SeedUsers().Wait(); // Wait for the asynchronous method to complete
+}
+app.MapRazorPages();
 app.Run();
