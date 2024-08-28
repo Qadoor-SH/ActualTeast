@@ -16,25 +16,61 @@
         {"role",curre}
     };
 }
-            <a asp-controller="Plogs" asp-action="Create" class="card-link">Add Plog</a>
 
 <div class="text-center">
-    <div class="d-flex justify-content-around align-items-center">
-        <h5 class="card-header me-auto">Plogs</h5>
+    <div class="d-flex justify-content-around align-items-center mb-3">
+        <div class="me-auto">
+
+            <a asp-controller="Plogs" asp-action="Create" class="card-link">Add Plog</a>
+        </div>
+        <label class="col-form-label me-2" for="SearchOption">Sort by</label>
+        <div class="justify-content-end me-2">
+            <form class="input-group" asp-action="Index">
+                <select name="sortOrder" class="form-select">
+                    <option value="">Title</option>
+                    <option value="title_desc">Title Desc</option>
+                    <option value="date">Date</option>
+                    <option value="date_desc">Date Desc</option>
+                </select>
+                <button type="submit"
+                        class="btn btn-outline-primary">
+                    Sort
+                </button>
+            </form>
+        </div>
         <label class="col-form-label me-2" for="SearchOption">Search in</label>
         <div class="justify-content-end">
             <form class="input-group" asp-action="Index">
-                <input type="search" class="form-control" name="searchString" placeholder="Search for user" aria-label="Search" />
+                <input type="search" class="form-control" name="searchString" placeholder="Search for plog" aria-label="Search" />
                 <button type="submit"
                         class="btn btn-outline-primary">
                     Search
                 </button>
             </form>
         </div>
+        @{
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+        }
+
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-pageNumber="@(Model.PageNumber - 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn btn-default @prevDisabled">
+            <i class="bx bx-skip-previous"></i> Previous
+        </a>
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-pageNumber="@(Model.PageNumber + 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn btn-default @nextDisabled">
+            Next <i class="bx bx-skip-next"></i>
+        </a>
     </div>
     @foreach(var plog in Model.Items )
     {
-        <div class="">
+        <div class="container ">
             <partial name="_PlogCard" model=@plog />
             <div class="d-flex flex-row justify-content-between">
                 <p class="fs-3"> @plog.Comments.Count Comment(s) </p>

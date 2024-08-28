@@ -24,7 +24,7 @@ namespace ActualTeast.Controllers
         {
             ViewData["CurrentSort"]=sortOrder;
             ViewData["NameSortParm"]=String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
-            ViewData["DateSortParm"]=sortOrder=="Date" ? "date_desc" : "Date";
+            ViewData["DateSortParm"]=sortOrder=="date" ? "date_desc" : "date";
             if(searchString!=null)
             {
                 pageNumber=1;
@@ -61,7 +61,7 @@ namespace ActualTeast.Controllers
                 break;
             }
 
-            int pageSize = 4;
+            int pageSize = 1;
             return View(await PaginatedList<Plog>.CreateAsync(source: users.AsNoTracking(),pageNumber??1,pageSize));
         }
 
